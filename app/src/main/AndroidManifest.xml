@@ -23,10 +23,11 @@
         <service
             android:name=".presenter.MusicService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
 
         <activity
             android:name=".UI.DetailSongActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".UI.DetailPlaylistActivity"

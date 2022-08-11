@@ -8,6 +8,7 @@ import com.example.zingmp3phake.utils.TIME_DELAY_LAUNCH
 import com.example.zingmp3phake.utils.handler
 
 class LuanchActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_luanch)
@@ -16,5 +17,10 @@ class LuanchActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }, TIME_DELAY_LAUNCH)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
     }
 }
