@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="@dimen/margin_5dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/size_img"
+        android:layout_height="@dimen/size_img"
+        android:id="@+id/containerImageView"
+        android:layout_marginStart="@dimen/margin_20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="@dimen/radius_8dp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/imgzingmp3logo"
+            android:id="@+id/imgSong" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/outSongName"
+        android:layout_width="@dimen/layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_5dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="@dimen/margin_10dp"
+        android:text="@string/name_song"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/containerImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/artist_name"
+        android:textSize="@dimen/text_size_14sp"
+        android:id="@+id/outSongAuthor"
+        app:layout_constraintStart_toStartOf="@+id/outSongName"
+        app:layout_constraintTop_toBottomOf="@+id/outSongName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
