@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="size_cimg">70dp</dimen>
+    <dimen name="margin_7dp">7dp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_14sp">14sp</dimen>
+    <dimen name="margin_5dp">5dp</dimen>
+    <dimen name="size_img">70dp</dimen>
+    <dimen name="radius_8dp">8dp</dimen>
+    <dimen name="layout_0dp">0dp</dimen>
+    <dimen name="text_size_17sp">20sp</dimen>
+    <dimen name="text_size_22sp">30sp</dimen>
+    <dimen name="margin_20dp">20dp</dimen>
+    <dimen name="margin_60dp">60dp</dimen>
+    <dimen name="img_song_size">320dp</dimen>
+    <dimen name="margin_30dp">30dp</dimen>
+    <dimen name="radius_10dp">10dp</dimen>
+    <dimen name="width_160dp">195dp</dimen>
+    <dimen name="height_95">118dp</dimen>
+</resources>
