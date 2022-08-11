@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
+        android:id="@+id/imageview_song"
         android:layout_width="@dimen/img_song_size"
         android:layout_height="@dimen/img_song_size"
-        android:src="@drawable/imgzingmp3logo"
         android:layout_centerInParent="true"
-        android:id="@+id/imageview_song"/>
-
+        android:src="@drawable/imgzingmp3logo" />
 </RelativeLayout>
