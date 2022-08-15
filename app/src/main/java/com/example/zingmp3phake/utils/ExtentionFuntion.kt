@@ -7,7 +7,6 @@ import com.bumptech.glide.Glide
 import com.example.zingmp3phake.R
 import de.hdodenhof.circleimageview.CircleImageView
 
-
 fun ImageView.loadByGlide(context: Context, uri: Uri) {
     Glide
         .with(context)
@@ -25,4 +24,3 @@ fun CircleImageView.loadByGlide(context: Context, uri: Uri) {
         .error(R.drawable.imgzingmp3logo)
         .into(this)
 }
-

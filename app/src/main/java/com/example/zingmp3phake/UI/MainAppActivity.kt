@@ -3,10 +3,10 @@ package com.example.zingmp3phake.ui
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.example.zingmp3phake.R
+import com.example.zingmp3phake.databinding.ActivityMainAppBinding
 import com.example.zingmp3phake.ui.adapter.ViewPagerMainAdapter
 import com.example.zingmp3phake.ui.fragment.ExploreFragment
 import com.example.zingmp3phake.ui.fragment.PersonalFragment
-import com.example.zingmp3phake.databinding.ActivityMainAppBinding
 import com.example.zingmp3phake.utils.base.BaseActivity
 
 class MainAppActivity : BaseActivity<ActivityMainAppBinding>(ActivityMainAppBinding::inflate) {

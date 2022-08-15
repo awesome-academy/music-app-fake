@@ -3,7 +3,6 @@ package com.example.zingmp3phake.data.repo.resource.local
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.provider.MediaStore
-import android.util.Log
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.data.model.SongInfo
 import com.example.zingmp3phake.data.repo.resource.Listener
@@ -21,7 +20,6 @@ import com.example.zingmp3phake.utils.INDEX_8
 import com.example.zingmp3phake.utils.N0_LYRIC
 import com.example.zingmp3phake.utils.NO_DATA
 import com.example.zingmp3phake.utils.TABLE_SONG
-import com.example.zingmp3phake.utils.TAG_LOG
 import com.example.zingmp3phake.utils.handler
 import java.util.concurrent.Executors
 import java.util.logging.Logger
@@ -30,7 +28,7 @@ class LocalSong : SongDataSource.SongLocalSource {
 
     private val executor = Executors.newSingleThreadExecutor()
     private var context: Context? = null
-    override fun getSongLocal(context: Context, listen: Listener<MutableList<Song>>) {
+    override fun getSongLocal(context: Context?, listen: Listener<MutableList<Song>>) {
         this.context = context
         val mRunnable = object : Runnable {
             override fun run() {
@@ -40,11 +38,11 @@ class LocalSong : SongDataSource.SongLocalSource {
         executor.execute(mRunnable)
     }
 
-    private fun handleGetSonglocal(context: Context, listen: Listener<MutableList<Song>>) {
+    private fun handleGetSonglocal(context: Context?, listen: Listener<MutableList<Song>>) {
         val list = mutableListOf<Song>()
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection = MediaStore.Audio.Media.IS_MUSIC + "!=0"
-        val cursor = context.contentResolver.query(uri, null, selection, null, null)
+        val cursor = context?.contentResolver?.query(uri, null, selection, null, null)
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 val url = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
@@ -78,7 +76,7 @@ class LocalSong : SongDataSource.SongLocalSource {
         }
     }
 
-    override fun getSongRecent(context: Context, listen: Listener<MutableList<Song>>) {
+    override fun getSongRecent(context: Context?, listen: Listener<MutableList<Song>>) {
         val listSong = mutableListOf<Song>()
         executor.execute {
             val sql = "SELECT * FROM $TABLE_SONG "
@@ -157,8 +155,8 @@ class LocalSong : SongDataSource.SongLocalSource {
                 val isfavorite = if (song.isFavorite) 1 else 0
                 val sql =
                     "INSERT INTO $TABLE_SONG VALUES ('${song.songInfo.songid}', '${song.songInfo.songName}', " +
-                            "'${song.songInfo.songArtist}', ${song.songInfo.duration}, '${song.songInfo.songUrl}', " +
-                            "'${song.songInfo.songImg}', $isLocal, $isfavorite, '${song.lyrics}');"
+                        "'${song.songInfo.songArtist}', ${song.songInfo.duration}, '${song.songInfo.songUrl}', " +
+                        "'${song.songInfo.songImg}', $isLocal, $isfavorite, '${song.lyrics}');"
                 SongDatabase.getInstance(context).queryData(sql)
             } catch (e: SQLiteConstraintException) {
                 Logger.getLogger(e.toString())

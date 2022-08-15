@@ -12,8 +12,8 @@ const val TABLE_SONG = "tblsong"
 const val DROP_TABLE = "DROP TABLE IF EXISTS tblsong"
 const val CREATE_TABLE =
     "CREATE TABLE IF NOT EXISTS tblsong (songid varchar(255) primary key, songname varchar(255), " +
-            "songartist varchar(255),songduration int, songurl varchar(255), songimg varchar(255), " +
-            "songlocal int, songfavorite int,songlyric varchar(255) )"
+        "songartist varchar(255),songduration int, songurl varchar(255), songimg varchar(255), " +
+        "songlocal int, songfavorite int,songlyric varchar(255) )"
 const val READ_PERMISSION_REQUEST_CODE = 101
 const val TIME_SLEEP = 500L
 const val ACTION_MUSIC = "action.music"
@@ -69,7 +69,7 @@ const val INDEX_8 = 8
 fun getTimetoSecond(second: Int): String {
     val minute = TimeUnit.MILLISECONDS.toMinutes(second.toLong())
     val second = TimeUnit.MILLISECONDS.toSeconds(second.toLong()) % MINUTE_SECOND
-    val time = String.format(Locale.US,"%02d:%02d", minute, second)
+    val time = String.format(Locale.US, "%02d:%02d", minute, second)
     return time
 }
 
