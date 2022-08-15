@@ -1,16 +1,15 @@
-package com.example.zingmp3phake.UI
+package com.example.zingmp3phake.ui
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.zingmp3phake.databinding.ActivitySearchBinding
+import com.example.zingmp3phake.utils.base.BaseActivity
 
-class SearchActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySearchBinding
+class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding::inflate) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun initData() {
+        // TODO never implement
+    }
+
+    override fun initView() {
         binding.apply {
             // TODO later
         }

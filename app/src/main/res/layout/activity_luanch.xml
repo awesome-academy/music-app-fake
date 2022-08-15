@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backgroung_container"
-    tools:context=".UI.LuanchActivity">
+    tools:context=".ui.LuanchActivity">
 
     <ImageView
         android:id="@+id/image_logo_zing"

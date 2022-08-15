@@ -1,18 +1,25 @@
-package com.example.zingmp3phake.UI
+package com.example.zingmp3phake.ui
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.zingmp3phake.UI.adapter.ViewPagerDetailSongAdapter
+import androidx.fragment.app.Fragment
+import com.example.zingmp3phake.ui.adapter.ViewPagerDetailSongAdapter
+import com.example.zingmp3phake.ui.fragment.DetailImageSongFragment
+import com.example.zingmp3phake.ui.fragment.LyricSongFragment
 import com.example.zingmp3phake.databinding.ActivityDetailSongBinding
+import com.example.zingmp3phake.utils.base.BaseActivity
 
-class DetailSongActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityDetailSongBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityDetailSongBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+class DetailSongActivity :
+    BaseActivity<ActivityDetailSongBinding>(ActivityDetailSongBinding::inflate) {
+
+    override fun initData() {
+        // TODO later
+    }
+
+    override fun initView() {
         binding.apply {
-            viewPager.adapter = ViewPagerDetailSongAdapter(supportFragmentManager)
+            viewPager.adapter = ViewPagerDetailSongAdapter(
+                supportFragmentManager,
+                listOf<Fragment>(DetailImageSongFragment(), LyricSongFragment())
+            )
         }
     }
 }
