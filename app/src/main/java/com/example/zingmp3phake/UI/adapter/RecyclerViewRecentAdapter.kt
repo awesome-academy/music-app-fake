@@ -56,7 +56,7 @@ class RecyclerViewRecentAdapter(private val listener: ItemClickListener) :
         RecyclerView.ViewHolder(viewBinding.root) {
         init {
             itemView.setOnClickListener {
-                listener.onItemClick(adapterPosition, listSong)
+                listener.onItemClick(listSong.size - 1 - adapterPosition, listSong)
             }
         }
     }

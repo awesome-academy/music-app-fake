@@ -1,34 +1,45 @@
 package com.example.zingmp3phake.presenter
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.os.Bundle
+import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.zingmp3phake.ui.DetailPlaylistActivity
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.data.repo.SongRepo
 import com.example.zingmp3phake.data.repo.resource.Listener
-import com.example.zingmp3phake.utils.BUNDLE_LIST_KEY
-import com.example.zingmp3phake.utils.BUNDLE_TITLE_STRING_KEY
-import com.example.zingmp3phake.utils.DATA_KEY
 import com.example.zingmp3phake.utils.READ_PERMISSION_REQUEST_CODE
-import com.example.zingmp3phake.utils.TITLE_FAVORITE
-import com.example.zingmp3phake.utils.TITLE_LOCAL
 
 class PerSonalFramgentPresenter(
     val songRepo: SongRepo,
     val personalView: IPersonalFragment.View
 ) : IPersonalFragment.Presenter {
-    private var context: Context? = null
+
     private var listLocalSong = mutableListOf<Song>()
     private var listRecentSong = mutableListOf<Song>()
     private var listFavoriteSong = mutableListOf<Song>()
 
+    private var musicService: MusicService = MusicService()
+    private var isConnection = false
+    private var postion = 0
+    private var serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            musicService = binder.getService()
+            isConnection = true
+            musicService.startSong(listRecentSong, postion)
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isConnection = false
+        }
+    }
+
     override fun getLocalSong(context: AppCompatActivity) {
-        this.context = context.applicationContext
         if (checkReadPermission(context.applicationContext)) {
             requestReadPermission(context)
         } else {
@@ -48,7 +59,7 @@ class PerSonalFramgentPresenter(
         }
     }
 
-    override fun getRecentSong(context: Context) {
+    override fun getRecentSong(context: Context?) {
         songRepo.getSongRecent(
             context,
             object : Listener<MutableList<Song>> {
@@ -65,30 +76,30 @@ class PerSonalFramgentPresenter(
     }
 
     override fun getFavoriteSong() {
-        TODO("Not yet implemented")
+        songRepo.getSongFavorite(object : Listener<MutableList<Song>> {
+            override fun onSuccess(list: MutableList<Song>) {
+                listFavoriteSong = list
+            }
+
+            override fun onFail(msg: String) {
+                // TODO("Not yet implemented")
+            }
+        })
     }
 
-    override fun handleStartSong(list: MutableList<Song>, pos: Int) {
-        // TODO Implement later
-    }
-
-    override fun handleClickIntent(title: String) {
-        var intent: Intent? = null
-        val bundle = Bundle()
-        when (title) {
-            TITLE_LOCAL -> {
-                intent = Intent(context?.applicationContext, DetailPlaylistActivity::class.java)
-                bundle.putParcelableArrayList(BUNDLE_LIST_KEY, listLocalSong as ArrayList<Song>)
-            }
-            TITLE_FAVORITE -> {
-                intent = Intent(context?.applicationContext, DetailPlaylistActivity::class.java)
-                bundle.putParcelableArrayList(BUNDLE_LIST_KEY, listFavoriteSong as ArrayList<Song>)
-            }
+    override fun handleStartSong(list: MutableList<Song>, pos: Int, context: Context?) {
+        postion = pos
+        if (isConnection) {
+            musicService.startSong(list, pos)
+        } else {
+            val service = Intent(context, MusicService::class.java)
+            context?.bindService(service, serviceConnection, Context.BIND_AUTO_CREATE)
         }
-        bundle.putString(BUNDLE_TITLE_STRING_KEY, title)
-        intent?.putExtra(DATA_KEY, bundle)
-        intent?.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        context?.startActivity(intent)
+    }
+
+    override fun stopService() {
+        musicService.unbindService(serviceConnection)
+        isConnection = false
     }
 
     private fun checkReadPermission(context: Context): Boolean {

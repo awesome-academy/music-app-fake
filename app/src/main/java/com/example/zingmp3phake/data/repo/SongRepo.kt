@@ -9,11 +9,11 @@ class SongRepo private constructor(
     val local: SongDataSource.SongLocalSource,
     val remote: SongDataSource.SongRemoteSource
 ) : SongDataSource.SongLocalSource, SongDataSource.SongRemoteSource {
-    override fun getSongLocal(context: Context, listen: Listener<MutableList<Song>>) {
+    override fun getSongLocal(context: Context?, listen: Listener<MutableList<Song>>) {
         local.getSongLocal(context, listen)
     }
 
-    override fun getSongRecent(context: Context, listen: Listener<MutableList<Song>>) {
+    override fun getSongRecent(context: Context?, listen: Listener<MutableList<Song>>) {
         local.getSongRecent(context, listen)
     }
 

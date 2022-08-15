@@ -9,13 +9,14 @@ interface IPersonalFragment {
         fun getLocalSongSuccess(list: MutableList<Song>)
         fun getLocalSongFail(msg: String)
         fun getRecentSong(list: MutableList<Song>)
+        fun getFavoriteSongSuccess(list: MutableList<Song>)
     }
 
     interface Presenter {
         fun getLocalSong(context: AppCompatActivity)
-        fun getRecentSong(context: Context)
+        fun getRecentSong(context: Context?)
         fun getFavoriteSong()
-        fun handleStartSong(list: MutableList<Song>, pos: Int)
-        fun handleClickIntent(title: String)
+        fun handleStartSong(list: MutableList<Song>, pos: Int, context: Context?)
+        fun stopService()
     }
 }

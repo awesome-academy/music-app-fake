@@ -1,12 +1,11 @@
 package com.example.zingmp3phake.data.model
 
 import android.os.Parcelable
-import com.example.zingmp3phake.utils.N0_LYRIC
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class Song(
-    var songInfo : SongInfo = SongInfo(),
+    var songInfo: SongInfo = SongInfo(),
     var isLocal: Boolean = false,
     var isFavorite: Boolean = false,
     var lyrics: MutableList<String> = mutableListOf()

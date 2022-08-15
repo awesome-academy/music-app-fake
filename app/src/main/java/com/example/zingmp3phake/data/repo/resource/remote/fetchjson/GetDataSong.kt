@@ -3,7 +3,6 @@ package com.example.zingmp3phake.data.repo.resource.remote.fetchjson
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.utils.API_ZING_SONG
 import com.example.zingmp3phake.utils.N0_LYRIC
-import com.example.zingmp3phake.utils.NO_DATA
 import com.example.zingmp3phake.utils.ZING_DATA
 import com.example.zingmp3phake.utils.ZING_SONG_ARTIST
 import com.example.zingmp3phake.utils.ZING_SONG_DURATION

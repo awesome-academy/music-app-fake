@@ -5,8 +5,8 @@ import com.example.zingmp3phake.data.model.Song
 
 interface SongDataSource {
     interface SongLocalSource {
-        fun getSongLocal(context: Context, listen: Listener<MutableList<Song>>)
-        fun getSongRecent(context: Context, listen: Listener<MutableList<Song>>)
+        fun getSongLocal(context: Context?, listen: Listener<MutableList<Song>>)
+        fun getSongRecent(context: Context?, listen: Listener<MutableList<Song>>)
         fun getSongFavorite(listen: Listener<MutableList<Song>>)
         fun addSongRecent(song: Song)
         fun addSongFavorite(song: Song)
