@@ -1,12 +1,17 @@
-package com.example.zingmp3phake.UI
+package com.example.zingmp3phake.ui
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.example.zingmp3phake.R
+import com.example.zingmp3phake.databinding.ActivityDetailPlaylistBinding
+import com.example.zingmp3phake.utils.base.BaseActivity
 
-class DetailPlaylistActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class DetailPlaylistActivity :
+    BaseActivity<ActivityDetailPlaylistBinding>(ActivityDetailPlaylistBinding::inflate) {
+
+    override fun initData() {
+        // TODO later
+    }
+
+    override fun initView() {
         setContentView(R.layout.activity_detail_playlist)
     }
 }

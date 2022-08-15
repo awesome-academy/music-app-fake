@@ -26,17 +26,17 @@
             android:exported="true"/>
 
         <activity
-            android:name=".UI.DetailSongActivity"
+            android:name=".ui.DetailSongActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".UI.DetailPlaylistActivity"
+            android:name=".ui.DetailPlaylistActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.SearchActivity"
+            android:name=".ui.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.LuanchActivity"
+            android:name=".ui.LuanchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UI.MainAppActivity"
+            android:name=".ui.MainAppActivity"
             android:exported="true"></activity>
     </application>
 
