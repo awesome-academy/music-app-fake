@@ -1,4 +1,4 @@
-package com.example.zingmp3phake.ui
+package com.example.zingmp3phake.screen.search
 
 import com.example.zingmp3phake.databinding.ActivitySearchBinding
 import com.example.zingmp3phake.utils.base.BaseActivity
@@ -11,7 +11,7 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
 
     override fun initView() {
         binding.apply {
-            // TODO later
+            searchView.requestFocus()
         }
     }
 }

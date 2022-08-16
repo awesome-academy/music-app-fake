@@ -5,6 +5,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardBackgroundColor="@android:color/transparent"
+        android:id="@+id/cardview">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/trending"
+            android:layout_marginStart="@dimen/margin_20dp"
+            android:textSize="@dimen/text_size_22sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_marginVertical="@dimen/margin_20dp"/>
+        <ProgressBar
+            android:layout_width="@dimen/size_img"
+            android:layout_height="@dimen/size_img"
+            android:layout_gravity="center"
+            android:id="@+id/progressbar_loadcontent"/>
+    </androidx.cardview.widget.CardView>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

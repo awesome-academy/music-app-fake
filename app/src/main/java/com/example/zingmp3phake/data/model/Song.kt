@@ -8,7 +8,7 @@ class Song(
     var songInfo: SongInfo = SongInfo(),
     var isLocal: Boolean = false,
     var isFavorite: Boolean = false,
-    var lyrics: MutableList<String> = mutableListOf()
+    var lyrics: String = ""
 ) : Parcelable {
 
     companion object {

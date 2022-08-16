@@ -10,8 +10,9 @@
         <TextView
             android:id="@+id/textview_lyric"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/margin_20dp"
+            android:gravity="center"
             android:lineSpacingExtra="@dimen/margin_10dp"
             android:paddingVertical="@dimen/margin_10dp"
             android:text="@string/text_lyric"

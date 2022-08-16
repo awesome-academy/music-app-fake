@@ -1,4 +1,4 @@
-package com.example.zingmp3phake.ui
+package com.example.zingmp3phake.screen.detailplaylist
 
 import com.example.zingmp3phake.R
 import com.example.zingmp3phake.databinding.ActivityDetailPlaylistBinding

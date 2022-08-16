@@ -4,11 +4,23 @@ import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.data.repo.resource.Listener
 import com.example.zingmp3phake.data.repo.resource.SongDataSource
 import com.example.zingmp3phake.data.repo.resource.remote.fetchjson.GetListSongTrending
+import com.example.zingmp3phake.data.repo.resource.remote.fetchjson.GetSongInSpotify
+import com.example.zingmp3phake.utils.SPOTIFY_LYRIC
+import com.example.zingmp3phake.utils.SPOTIFY_TRACK
+import java.net.URL
 
 class RemoteSong : SongDataSource.SongRemoteSource {
 
     override fun getTrendingSong(listen: Listener<MutableList<Song>>) {
         GetListSongTrending(listen)
+    }
+
+    override fun getLyricSong(url: URL, listen: Listener<MutableList<String>>) {
+        GetSongInSpotify(listen, SPOTIFY_LYRIC, url)
+    }
+
+    override fun getResultSearchSong(url: URL, listen: Listener<MutableList<Song>>) {
+        GetSongInSpotify(listen, SPOTIFY_TRACK, url)
     }
 
     companion object {

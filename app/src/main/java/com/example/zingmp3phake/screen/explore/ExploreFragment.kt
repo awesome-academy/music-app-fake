@@ -1,20 +1,18 @@
-package com.example.zingmp3phake.ui.fragment
+package com.example.zingmp3phake.screen.explore
 
+import android.view.View
 import android.widget.Toast
 import com.example.zingmp3phake.data.model.Song
-import com.example.zingmp3phake.data.repo.SongRepo
+import com.example.zingmp3phake.data.repo.SongRepository
 import com.example.zingmp3phake.data.repo.resource.local.LocalSong
 import com.example.zingmp3phake.data.repo.resource.remote.RemoteSong
 import com.example.zingmp3phake.databinding.FragmentExploreBinding
-import com.example.zingmp3phake.presenter.ExploreFragmentPresenter
-import com.example.zingmp3phake.presenter.IExploreFragment
-import com.example.zingmp3phake.ui.adapter.RecyclerViewAdapter
 import com.example.zingmp3phake.utils.NO_INTERNET
 import com.example.zingmp3phake.utils.base.BaseFragment
 
 class ExploreFragment :
     BaseFragment<FragmentExploreBinding>(FragmentExploreBinding::inflate),
-    IExploreFragment.View,
+    ExploreContract.View,
     RecyclerViewAdapter.ItemClickListener {
     private var explorePresenter: ExploreFragmentPresenter? = null
     private val adapterRv = RecyclerViewAdapter(this)
@@ -25,7 +23,7 @@ class ExploreFragment :
 
     override fun initData() {
         explorePresenter = ExploreFragmentPresenter(
-            SongRepo.getInstance(
+            SongRepository.getInstance(
                 LocalSong.getInstance(),
                 RemoteSong.getInstance(),
             ),
@@ -40,6 +38,7 @@ class ExploreFragment :
 
     override fun displaySuccess(list: MutableList<Song>) {
         adapterRv.setData(list)
+        binding.cardview.visibility = View.GONE
     }
 
     override fun displayFail(msg: String) {

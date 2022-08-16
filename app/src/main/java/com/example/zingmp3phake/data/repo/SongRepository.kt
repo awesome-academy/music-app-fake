@@ -4,8 +4,9 @@ import android.content.Context
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.data.repo.resource.Listener
 import com.example.zingmp3phake.data.repo.resource.SongDataSource
+import java.net.URL
 
-class SongRepo private constructor(
+class SongRepository private constructor(
     val local: SongDataSource.SongLocalSource,
     val remote: SongDataSource.SongRemoteSource
 ) : SongDataSource.SongLocalSource, SongDataSource.SongRemoteSource {
@@ -41,14 +42,22 @@ class SongRepo private constructor(
         remote.getTrendingSong(listen)
     }
 
+    override fun getLyricSong(url: URL, listen: Listener<MutableList<String>>) {
+        remote.getLyricSong(url, listen)
+    }
+
+    override fun getResultSearchSong(url: URL, listen: Listener<MutableList<Song>>) {
+        remote.getResultSearchSong(url, listen)
+    }
+
     companion object {
-        private var instance: SongRepo? = null
+        private var instance: SongRepository? = null
         fun getInstance(
             local: SongDataSource.SongLocalSource,
             remote: SongDataSource.SongRemoteSource
         ) =
             synchronized(this) {
-                instance ?: SongRepo(local, remote).also { instance = it }
+                instance ?: SongRepository(local, remote).also { instance = it }
             }
     }
 }
