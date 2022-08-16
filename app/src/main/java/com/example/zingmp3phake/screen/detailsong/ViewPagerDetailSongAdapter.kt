@@ -1,10 +1,10 @@
-package com.example.zingmp3phake.ui.adapter
+package com.example.zingmp3phake.screen.detailsong
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
-class ViewPagerMainAdapter(fm: FragmentManager, val listFrag: List<Fragment>) :
+class ViewPagerDetailSongAdapter(fm: FragmentManager, val listFrag: List<Fragment>) :
     FragmentStatePagerAdapter(fm) {
     override fun getCount(): Int {
         return listFrag.size
@@ -13,8 +13,4 @@ class ViewPagerMainAdapter(fm: FragmentManager, val listFrag: List<Fragment>) :
     override fun getItem(position: Int): Fragment {
         return listFrag.get(position)
     }
-}
-
-interface ListenerItemClickExplore {
-    fun notification()
 }

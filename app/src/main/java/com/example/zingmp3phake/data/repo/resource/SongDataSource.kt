@@ -2,6 +2,7 @@ package com.example.zingmp3phake.data.repo.resource
 
 import android.content.Context
 import com.example.zingmp3phake.data.model.Song
+import java.net.URL
 
 interface SongDataSource {
     interface SongLocalSource {
@@ -16,5 +17,7 @@ interface SongDataSource {
 
     interface SongRemoteSource {
         fun getTrendingSong(listen: Listener<MutableList<Song>>)
+        fun getLyricSong(url: URL, listen: Listener<MutableList<String>>)
+        fun getResultSearchSong(url: URL, listen: Listener<MutableList<Song>>)
     }
 }

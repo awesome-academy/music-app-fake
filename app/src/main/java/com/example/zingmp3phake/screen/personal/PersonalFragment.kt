@@ -1,18 +1,15 @@
-package com.example.zingmp3phake.ui.fragment
+package com.example.zingmp3phake.screen.personal
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zingmp3phake.data.model.Song
-import com.example.zingmp3phake.data.repo.SongRepo
+import com.example.zingmp3phake.data.repo.SongRepository
 import com.example.zingmp3phake.data.repo.resource.local.LocalSong
 import com.example.zingmp3phake.data.repo.resource.remote.RemoteSong
 import com.example.zingmp3phake.databinding.FragmentPersonalBinding
-import com.example.zingmp3phake.presenter.IPersonalFragment
-import com.example.zingmp3phake.presenter.PerSonalFramgentPresenter
-import com.example.zingmp3phake.ui.DetailPlaylistActivity
-import com.example.zingmp3phake.ui.adapter.RecyclerViewRecentAdapter
+import com.example.zingmp3phake.screen.detailplaylist.DetailPlaylistActivity
 import com.example.zingmp3phake.utils.BUNDLE_LIST_KEY
 import com.example.zingmp3phake.utils.BUNDLE_TITLE_STRING_KEY
 import com.example.zingmp3phake.utils.DATA_KEY
@@ -23,13 +20,19 @@ import com.example.zingmp3phake.utils.base.BaseFragment
 
 class PersonalFragment :
     BaseFragment<FragmentPersonalBinding>(FragmentPersonalBinding::inflate),
-    IPersonalFragment.View,
+    PersonalContract.View,
     RecyclerViewRecentAdapter.ItemClickListener {
 
     private var listLocalSong = mutableListOf<Song>()
     private var listRecentSong = mutableListOf<Song>()
     private var listFavoriteSong = mutableListOf<Song>()
-    private var personalPresenter: PerSonalFramgentPresenter? = null
+    private var personalPresenter = PerSonalFramgentPresenter(
+        SongRepository.getInstance(
+            LocalSong.getInstance(),
+            RemoteSong.getInstance()
+        ),
+        this
+    )
     private val adapterRv = RecyclerViewRecentAdapter(this)
 
     override fun initView() {
@@ -46,21 +49,16 @@ class PersonalFragment :
                 context?.startActivity(intent)
             }
             containerFavorite.setOnClickListener {
-                personalPresenter?.getRecentSong(context)
+                personalPresenter?.getFavoriteSong(context)
             }
         }
     }
 
     override fun initData() {
-        personalPresenter = PerSonalFramgentPresenter(
-            SongRepo.getInstance(
-                LocalSong.getInstance(),
-                RemoteSong.getInstance()
-            ),
-            this
-        )
         personalPresenter?.getLocalSong(context as AppCompatActivity)
         personalPresenter?.getRecentSong(context)
+        personalPresenter?.registerBroadcast(context)
+        personalPresenter?.bindService(context)
     }
 
     override fun getLocalSongSuccess(list: MutableList<Song>) {
@@ -90,5 +88,11 @@ class PersonalFragment :
 
     override fun onItemClick(pos: Int, listSong: MutableList<Song>) {
         personalPresenter?.handleStartSong(listSong, pos, context)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        personalPresenter?.stopService()
+        personalPresenter?.unRegisterBroadcast(context)
     }
 }

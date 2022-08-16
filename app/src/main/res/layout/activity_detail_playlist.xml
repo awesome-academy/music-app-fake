@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/backgroung_container"
-    tools:context=".ui.DetailPlaylistActivity">
+    tools:context=".screen.detailplaylist.DetailPlaylistActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tool_bar"
@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints">
 
@@ -83,10 +83,13 @@
 
         <TextView
             android:id="@+id/textview_artist_name"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/layout_0dp"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="Author"
             android:textSize="@dimen/text_size_14sp"
+            app:layout_constraintEnd_toStartOf="@+id/button_favorite"
             app:layout_constraintStart_toStartOf="@+id/textview_song_name"
             app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
 

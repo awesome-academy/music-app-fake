@@ -1,4 +1,4 @@
-package com.example.zingmp3phake.ui.adapter
+package com.example.zingmp3phake.screen.personal
 
 import android.content.ContentUris
 import android.content.Context

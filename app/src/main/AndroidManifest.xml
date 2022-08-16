@@ -21,22 +21,22 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <service
-            android:name=".presenter.MusicService"
+            android:name=".screen.MusicService"
             android:enabled="true"
             android:exported="true"/>
 
         <activity
-            android:name=".ui.DetailSongActivity"
+            android:name=".screen.detailsong.DetailSongActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ui.DetailPlaylistActivity"
+            android:name=".screen.detailplaylist.DetailPlaylistActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.SearchActivity"
+            android:name=".screen.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.LuanchActivity"
+            android:name=".screen.LuanchActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,7 +45,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainAppActivity"
+            android:name=".screen.mainapp.MainAppActivity"
             android:exported="true"></activity>
     </application>
 

@@ -27,9 +27,9 @@ import java.util.logging.Logger
 class LocalSong : SongDataSource.SongLocalSource {
 
     private val executor = Executors.newSingleThreadExecutor()
-    private var context: Context? = null
+    private var songDb: SongDatabase? = null
+
     override fun getSongLocal(context: Context?, listen: Listener<MutableList<Song>>) {
-        this.context = context
         val mRunnable = object : Runnable {
             override fun run() {
                 handleGetSonglocal(context, listen)
@@ -39,6 +39,7 @@ class LocalSong : SongDataSource.SongLocalSource {
     }
 
     private fun handleGetSonglocal(context: Context?, listen: Listener<MutableList<Song>>) {
+        songDb = SongDatabase.getInstance(context)
         val list = mutableListOf<Song>()
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val selection = MediaStore.Audio.Media.IS_MUSIC + "!=0"
@@ -63,7 +64,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                         ),
                         true,
                         false,
-                        mutableListOf(N0_LYRIC)
+                        N0_LYRIC
                     )
                 )
             }
@@ -97,7 +98,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                             SongInfo(id, name, artist, duration, url, img),
                             local,
                             favorite,
-                            mutableListOf(lyric)
+                            lyric
                         )
                     )
                 }
@@ -116,8 +117,8 @@ class LocalSong : SongDataSource.SongLocalSource {
         val listSong = mutableListOf<Song>()
         executor.execute {
             val sql = "SELECT * FROM $TABLE_SONG WHERE ${Song.SONG_FAVORITE} =1"
-            val data = SongDatabase.getInstance(context).getData(sql)
-            while (data.moveToNext()) {
+            val data = songDb?.getData(sql)
+            while (data != null && data.moveToNext()) {
                 data.also {
                     val id = it.getString(INDEX_0)
                     val name = it.getString(INDEX_1)
@@ -133,7 +134,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                             SongInfo(id, name, artist, duration, url, img),
                             local,
                             favorite,
-                            mutableListOf(lyric)
+                            lyric
                         )
                     )
                 }
@@ -157,7 +158,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                     "INSERT INTO $TABLE_SONG VALUES ('${song.songInfo.songid}', '${song.songInfo.songName}', " +
                         "'${song.songInfo.songArtist}', ${song.songInfo.duration}, '${song.songInfo.songUrl}', " +
                         "'${song.songInfo.songImg}', $isLocal, $isfavorite, '${song.lyrics}');"
-                SongDatabase.getInstance(context).queryData(sql)
+                songDb?.queryData(sql)
             } catch (e: SQLiteConstraintException) {
                 Logger.getLogger(e.toString())
             }
@@ -168,7 +169,7 @@ class LocalSong : SongDataSource.SongLocalSource {
         executor.execute {
             val sql =
                 "update $TABLE_SONG set ${Song.SONG_FAVORITE} = 1 where ${Song.SONG_ID} = '${song.songInfo.songid}';"
-            SongDatabase.getInstance(context).queryData(sql)
+            songDb?.queryData(sql)
         }
     }
 
@@ -176,7 +177,7 @@ class LocalSong : SongDataSource.SongLocalSource {
         executor.execute {
             val sql =
                 "update $TABLE_SONG set ${Song.SONG_FAVORITE} = 0 where ${Song.SONG_ID} = '${song.songInfo.songid}';"
-            SongDatabase.getInstance(context).queryData(sql)
+            songDb?.queryData(sql)
         }
     }
 
@@ -184,24 +185,26 @@ class LocalSong : SongDataSource.SongLocalSource {
         var song: Song? = null
         executor.execute {
             val sql = "SELECT * FROM $TABLE_SONG WHERE ${Song.SONG_FAVORITE} =1;"
-            val data = SongDatabase.getInstance(context).getData(sql)
-            while (data.moveToNext()) {
-                data.also {
-                    val id = it.getString(INDEX_0)
-                    val name = it.getString(INDEX_1)
-                    val artist = it.getString(INDEX_2)
-                    val duration = it.getInt(INDEX_3)
-                    val url = it.getString(INDEX_4)
-                    val img = it.getString(INDEX_5)
-                    val local = if (it.getInt(INDEX_6) == 1) true else false
-                    val favorite = if (it.getInt(INDEX_7) == 1) true else false
-                    val lyric = it.getString(INDEX_8)
-                    song = Song(
-                        SongInfo(id, name, artist, duration, url, img),
-                        local,
-                        favorite,
-                        mutableListOf(lyric)
-                    )
+            val data = songDb?.getData(sql)
+            if (data != null) {
+                while (data.moveToNext()) {
+                    data.also {
+                        val id = it.getString(INDEX_0)
+                        val name = it.getString(INDEX_1)
+                        val artist = it.getString(INDEX_2)
+                        val duration = it.getInt(INDEX_3)
+                        val url = it.getString(INDEX_4)
+                        val img = it.getString(INDEX_5)
+                        val local = if (it.getInt(INDEX_6) == 1) true else false
+                        val favorite = if (it.getInt(INDEX_7) == 1) true else false
+                        val lyric = it.getString(INDEX_8)
+                        song = Song(
+                            SongInfo(id, name, artist, duration, url, img),
+                            local,
+                            favorite,
+                            lyric
+                        )
+                    }
                 }
             }
         }

@@ -1,10 +1,10 @@
-package com.example.zingmp3phake.presenter
+package com.example.zingmp3phake.screen.personal
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import com.example.zingmp3phake.data.model.Song
 
-interface IPersonalFragment {
+interface PersonalContract {
     interface View {
         fun getLocalSongSuccess(list: MutableList<Song>)
         fun getLocalSongFail(msg: String)
@@ -15,8 +15,11 @@ interface IPersonalFragment {
     interface Presenter {
         fun getLocalSong(context: AppCompatActivity)
         fun getRecentSong(context: Context?)
-        fun getFavoriteSong()
+        fun getFavoriteSong(context: Context?)
         fun handleStartSong(list: MutableList<Song>, pos: Int, context: Context?)
         fun stopService()
+        fun bindService(context: Context?)
+        fun registerBroadcast(context: Context?)
+        fun unRegisterBroadcast(context: Context?)
     }
 }

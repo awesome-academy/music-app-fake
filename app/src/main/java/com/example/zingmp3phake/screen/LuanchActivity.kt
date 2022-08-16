@@ -1,7 +1,8 @@
-package com.example.zingmp3phake.ui
+package com.example.zingmp3phake.screen
 
 import android.content.Intent
 import com.example.zingmp3phake.databinding.ActivityLuanchBinding
+import com.example.zingmp3phake.screen.mainapp.MainAppActivity
 import com.example.zingmp3phake.utils.TIME_DELAY_LAUNCH
 import com.example.zingmp3phake.utils.base.BaseActivity
 import com.example.zingmp3phake.utils.handler

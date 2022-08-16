@@ -1,4 +1,4 @@
-package com.example.zingmp3phake.presenter
+package com.example.zingmp3phake.screen
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -106,7 +106,8 @@ class MusicService : Service() {
                 notificationManager.notify(NOTIFICATION_ID, notification?.build())
             }
         } else {
-            Glide.with(applicationContext).asBitmap().load(listSongs.get(positions).songInfo.songImg)
+            Glide.with(applicationContext).asBitmap()
+                .load(listSongs.get(positions).songInfo.songImg)
                 .into(object : CustomTarget<Bitmap?>() {
                     override fun onResourceReady(
                         resource: Bitmap,
@@ -177,7 +178,10 @@ class MusicService : Service() {
         }
         if (listSong.get(pos).isLocal) {
             mediaPlayer =
-                MediaPlayer.create(applicationContext, listSong.get(positions).songInfo.songUrl.toUri())
+                MediaPlayer.create(
+                    applicationContext,
+                    listSong.get(positions).songInfo.songUrl.toUri()
+                )
         } else {
             mediaPlayer = MediaPlayer()
             mediaPlayer.apply {

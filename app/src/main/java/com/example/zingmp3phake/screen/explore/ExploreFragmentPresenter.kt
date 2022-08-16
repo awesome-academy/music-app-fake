@@ -1,4 +1,4 @@
-package com.example.zingmp3phake.presenter
+package com.example.zingmp3phake.screen.explore
 
 import android.content.ComponentName
 import android.content.Context
@@ -7,26 +7,32 @@ import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.os.IBinder
 import com.example.zingmp3phake.data.model.Song
-import com.example.zingmp3phake.data.repo.SongRepo
+import com.example.zingmp3phake.data.repo.SongRepository
 import com.example.zingmp3phake.data.repo.resource.Listener
+import com.example.zingmp3phake.screen.MusicService
 
-class ExploreFragmentPresenter(val songRepo: SongRepo, val exploreView: IExploreFragment.View) :
-    IExploreFragment.Presenter {
+class ExploreFragmentPresenter(val songRepo: SongRepository, val exploreView: ExploreContract.View) :
+    ExploreContract.Presenter {
 
     private var musicService: MusicService = MusicService()
     private var isConnection = false
     private var postion = 0
-    private var list = mutableListOf<Song>()
     private var serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
             val binder = service as MusicService.LocalBinder
             musicService = binder.getService()
             isConnection = true
-            musicService.startSong(list, postion)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
             isConnection = false
+        }
+    }
+
+    override fun bindService(context: Context) {
+        if (isConnection == false) {
+            val service = Intent(context, MusicService::class.java)
+            context.bindService(service, serviceConnection, Context.BIND_AUTO_CREATE)
         }
     }
 
@@ -48,15 +54,12 @@ class ExploreFragmentPresenter(val songRepo: SongRepo, val exploreView: IExplore
     }
 
     override fun handlerStartSong(list: MutableList<Song>, pos: Int, context: Context?) {
-        postion = pos
-        this.list = list
         if (isConnection) {
             musicService.startSong(list, pos)
         } else {
             val service = Intent(context, MusicService::class.java)
             context?.bindService(service, serviceConnection, Context.BIND_AUTO_CREATE)
         }
-        songRepo.local.addSongRecent(list.get(pos))
     }
 
     fun handleNextSong() {
