@@ -18,6 +18,7 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -32,12 +33,13 @@ import com.example.zingmp3phake.utils.CHANNEL_NAME
 import com.example.zingmp3phake.utils.MEDIA_EXTERNAL_AUDIO_URI
 import com.example.zingmp3phake.utils.MusicAction
 import com.example.zingmp3phake.utils.NOTIFICATION_ID
+import com.example.zingmp3phake.utils.TAG_LOG
 import com.example.zingmp3phake.utils.TAG_MEDIA_SESSION
 import com.example.zingmp3phake.utils.TITILE_NEXT
 import com.example.zingmp3phake.utils.TITILE_PAUSE
 import com.example.zingmp3phake.utils.TITILE_PLAY
+import java.io.FileNotFoundException
 import java.lang.reflect.InvocationTargetException
-import java.util.logging.Logger
 import kotlin.random.Random
 
 class MusicService : Service() {
@@ -45,7 +47,7 @@ class MusicService : Service() {
     var listSongs = mutableListOf<Song>()
     var positions = 0
     var isPlayings = false
-    private var mediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer? = null
     private val binder = LocalBinder()
     private var isCreate = false
     private var notification: NotificationCompat.Builder? = null
@@ -94,7 +96,10 @@ class MusicService : Service() {
                     )
                 }
             } catch (e: InvocationTargetException) {
-                Logger.getLogger(e.toString())
+                e.message?.let { Log.v(TAG_LOG, it) }
+                bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.imgzingmp3logo)
+            } catch (e: FileNotFoundException) {
+                e.message?.let { Log.v(TAG_LOG, it) }
                 bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.imgzingmp3logo)
             }
             notification?.setLargeIcon(bitmap)
@@ -172,23 +177,17 @@ class MusicService : Service() {
         positions = pos
         isPlayings = true
         getPendingIntent(MusicAction.START.name)?.send()
-        if (mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.release()
-        }
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer()
         if (listSong.get(pos).isLocal) {
-            mediaPlayer =
-                MediaPlayer.create(
-                    applicationContext,
-                    listSong.get(positions).songInfo.songUrl.toUri()
-                )
+            mediaPlayer?.apply {
+                setDataSource(applicationContext, listSong.get(positions).songInfo.songUrl.toUri())
+            }
         } else {
-            mediaPlayer = MediaPlayer()
-            mediaPlayer.apply {
+            mediaPlayer?.apply {
                 setAudioStreamType(AudioManager.STREAM_MUSIC)
                 setDataSource(listSong.get(pos).songInfo.songUrl)
-                prepare()
-                start()
             }
         }
         mediaPlayer?.apply {
@@ -196,6 +195,7 @@ class MusicService : Service() {
             setOnCompletionListener {
                 getPendingIntent(MusicAction.NEXT.name)?.send()
             }
+            prepare()
             start()
         }
         if (isCreate == false) {

@@ -26,18 +26,18 @@ class PersonalFragment :
     private var listLocalSong = mutableListOf<Song>()
     private var listRecentSong = mutableListOf<Song>()
     private var listFavoriteSong = mutableListOf<Song>()
-    private var personalPresenter = PerSonalFramgentPresenter(
+    private var presenter = PerSonalFramgentPresenter(
         SongRepository.getInstance(
             LocalSong.getInstance(),
             RemoteSong.getInstance()
         ),
         this
     )
-    private val adapterRv = RecyclerViewRecentAdapter(this)
+    private val adapterRecentSong = RecyclerViewRecentAdapter(this)
 
     override fun initView() {
-        binding.recyclerView.isNestedScrollingEnabled = true
-        binding.recyclerView.adapter = adapterRv
+        binding.recyclerViewSongRecent.isNestedScrollingEnabled = true
+        binding.recyclerViewSongRecent.adapter = adapterRecentSong
         binding.apply {
             containerLocal.setOnClickListener {
                 val intent = Intent(context?.applicationContext, DetailPlaylistActivity::class.java)
@@ -49,34 +49,34 @@ class PersonalFragment :
                 context?.startActivity(intent)
             }
             containerFavorite.setOnClickListener {
-                personalPresenter?.getFavoriteSong(context)
+                presenter?.getFavoriteSong(context)
             }
         }
     }
 
     override fun initData() {
-        personalPresenter?.getLocalSong(context as AppCompatActivity)
-        personalPresenter?.getRecentSong(context)
-        personalPresenter?.registerBroadcast(context)
-        personalPresenter?.bindService(context)
+        presenter?.getLocalSong(context as AppCompatActivity)
+        presenter?.getRecentSong(context)
+        presenter?.registerBroadcast(context)
+        presenter?.bindService(context)
     }
 
-    override fun getLocalSongSuccess(list: MutableList<Song>) {
-        binding.textviewNumberOfLocalSong.text = "${list.size} $SONG"
-        listLocalSong = list
+    override fun getLocalSongSuccess(songs: MutableList<Song>) {
+        binding.textNumberOfLocalSong.text = "${songs.size} $SONG"
+        listLocalSong = songs
     }
 
     override fun getLocalSongFail(msg: String) {
         Toast.makeText(context?.applicationContext, msg, Toast.LENGTH_SHORT).show()
     }
 
-    override fun getRecentSong(list: MutableList<Song>) {
-        adapterRv.setData(list)
-        listRecentSong = list
+    override fun getRecentSong(songs: MutableList<Song>) {
+        adapterRecentSong.setData(songs)
+        listRecentSong = songs
     }
 
-    override fun getFavoriteSongSuccess(list: MutableList<Song>) {
-        listFavoriteSong = listLocalSong
+    override fun getFavoriteSongSuccess(songs: MutableList<Song>) {
+        listFavoriteSong = songs
         val intent = Intent(context?.applicationContext, DetailPlaylistActivity::class.java)
         val bundle = Bundle()
         bundle.putParcelableArrayList(BUNDLE_LIST_KEY, listFavoriteSong as ArrayList<Song>)
@@ -87,12 +87,12 @@ class PersonalFragment :
     }
 
     override fun onItemClick(pos: Int, listSong: MutableList<Song>) {
-        personalPresenter?.handleStartSong(listSong, pos, context)
+        presenter?.handleStartSong(listSong, pos, context)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        personalPresenter?.stopService()
-        personalPresenter?.unRegisterBroadcast(context)
+        presenter?.stopService()
+        presenter?.unRegisterBroadcast(context)
     }
 }

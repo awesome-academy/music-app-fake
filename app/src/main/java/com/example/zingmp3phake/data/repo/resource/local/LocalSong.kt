@@ -58,7 +58,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                             cursor.getString(id),
                             cursor.getString(name),
                             cursor.getString(artist),
-                            duration,
+                            cursor.getInt(duration),
                             cursor.getString(url),
                             cursor.getString(img)
                         ),
