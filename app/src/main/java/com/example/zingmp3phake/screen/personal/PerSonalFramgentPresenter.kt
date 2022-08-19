@@ -22,7 +22,7 @@ import com.example.zingmp3phake.utils.READ_PERMISSION_REQUEST_CODE
 
 class PerSonalFramgentPresenter(
     val songRepo: SongRepository,
-    val personalView: PersonalContract.View
+    val view: PersonalContract.View
 ) : PersonalContract.Presenter {
 
     private var listLocalSong = mutableListOf<Song>()
@@ -65,11 +65,11 @@ class PerSonalFramgentPresenter(
                 object : Listener<MutableList<Song>> {
                     override fun onSuccess(list: MutableList<Song>) {
                         listLocalSong = list
-                        personalView.getLocalSongSuccess(list)
+                        view.getLocalSongSuccess(list)
                     }
 
                     override fun onFail(msg: String) {
-                        personalView.getLocalSongFail(msg)
+                        view.getLocalSongFail(msg)
                     }
                 }
             )
@@ -81,7 +81,7 @@ class PerSonalFramgentPresenter(
             context,
             object : Listener<MutableList<Song>> {
                 override fun onSuccess(list: MutableList<Song>) {
-                    personalView.getRecentSong(list)
+                    view.getRecentSong(list)
                     listRecentSong = list
                 }
 
@@ -96,7 +96,7 @@ class PerSonalFramgentPresenter(
         songRepo.getSongFavorite(object : Listener<MutableList<Song>> {
             override fun onSuccess(list: MutableList<Song>) {
                 listFavoriteSong = list
-                personalView.getFavoriteSongSuccess(list)
+                view.getFavoriteSongSuccess(list)
             }
 
             override fun onFail(msg: String) {
@@ -139,13 +139,20 @@ class PerSonalFramgentPresenter(
         return ActivityCompat.checkSelfPermission(
             context,
             Manifest.permission.READ_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.MANAGE_EXTERNAL_STORAGE
         ) != PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestReadPermission(activity: AppCompatActivity) {
         ActivityCompat.requestPermissions(
             activity,
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.MANAGE_EXTERNAL_STORAGE
+            ),
             READ_PERMISSION_REQUEST_CODE
         )
     }

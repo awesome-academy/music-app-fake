@@ -14,4 +14,8 @@ class SearchActivity : BaseActivity<ActivitySearchBinding>(ActivitySearchBinding
             searchView.requestFocus()
         }
     }
+
+    override fun handleEvent() {
+        // TODO("Not yet implemented")
+    }
 }

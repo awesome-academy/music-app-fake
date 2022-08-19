@@ -18,31 +18,39 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_back_24" />
+        <TextView
+            android:id="@+id/text_number_of_list_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_17sp"
+            android:layout_marginLeft="@dimen/margin_30dp"
+            />
 
     </androidx.appcompat.widget.Toolbar>
 
     <TextView
-        android:id="@+id/textview_playlist_name"
+        android:id="@+id/text_playlist_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_20dp"
         android:layout_marginTop="@dimen/margin_20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+        tools:ignore="NotSibling"
         android:text="@string/list_favo"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_22sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-        tools:ignore="NotSibling" />
+        android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_playlist"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_0dp"
         android:layout_marginTop="@dimen/margin_10dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/container_state_song"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_playlist_name"
+        app:layout_constraintTop_toBottomOf="@+id/text_playlist_name"
         tools:ignore="NotSibling"
         tools:listitem="@layout/item_recycle_view" />
 
@@ -56,9 +64,9 @@
         tools:ignore="MissingConstraints">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cimg"
-            android:layout_width="@dimen/size_cimg"
-            android:layout_height="@dimen/size_cimg"
+            android:id="@+id/circle_image_song"
+            android:layout_width="@dimen/size_circle_image"
+            android:layout_height="@dimen/size_circle_image"
             android:layout_margin="@dimen/margin_7dp"
             android:src="@drawable/imgzingmp3logo"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,31 +75,30 @@
 
 
         <TextView
-            android:id="@+id/textview_song_name"
+            android:id="@+id/text_song_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/circle_image_song"
+            app:layout_constraintTop_toTopOf="parent"
             android:ellipsize="end"
             android:maxLines="1"
             android:text="Song Name"
             android:textColor="@color/black"
-            android:textSize="@dimen/text_size_16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cimg"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textSize="@dimen/text_size_16sp"/>
 
         <TextView
-            android:id="@+id/textview_artist_name"
+            android:id="@+id/text_artist_name"
             android:layout_width="@dimen/layout_0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@+id/button_favorite"
+            app:layout_constraintStart_toStartOf="@+id/text_song_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Author"
-            android:textSize="@dimen/text_size_14sp"
-            app:layout_constraintEnd_toStartOf="@+id/button_favorite"
-            app:layout_constraintStart_toStartOf="@+id/textview_song_name"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            android:textSize="@dimen/text_size_14sp"/>
 
         <ImageButton
             android:id="@+id/button_next"
@@ -101,7 +108,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_next_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
         <ImageButton
             android:id="@+id/button_play"
@@ -111,7 +118,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_play_24"
             app:layout_constraintEnd_toStartOf="@+id/button_next"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
         <ImageButton
             android:id="@+id/button_favorite"
@@ -121,7 +128,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_favorite_24"
             app:layout_constraintEnd_toStartOf="@+id/button_play"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

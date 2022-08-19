@@ -18,7 +18,10 @@ abstract class BaseActivity<VB : ViewBinding>(
         setContentView(binding.root)
         initView()
         initData()
+        handleEvent()
     }
+
+    abstract fun handleEvent()
 
     abstract fun initData()
 

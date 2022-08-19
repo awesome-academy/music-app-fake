@@ -24,4 +24,8 @@ class LuanchActivity : BaseActivity<ActivityLuanchBinding>(ActivityLuanchBinding
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
     }
+
+    override fun handleEvent() {
+        // TODO("Not yet implemented")
+    }
 }
