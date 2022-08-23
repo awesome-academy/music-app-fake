@@ -8,7 +8,7 @@ import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.databinding.ItemRecycleViewBinding
-import com.example.zingmp3phake.utils.MEDIA_EXTERNAL_AUDIO_URI
+import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.loadByGlide
 
 class RecyclerViewAdapter(private val listener: ItemClickListener) :
@@ -33,12 +33,12 @@ class RecyclerViewAdapter(private val listener: ItemClickListener) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.viewBinding.apply {
-            outSongAuthor.text = listSong.get(position).songInfo.songArtist
-            outSongName.text = listSong.get(position).songInfo.songName
+            textviewArtistName.text = listSong.get(position).songInfo.songArtist
+            textviewSongName.text = listSong.get(position).songInfo.songName
         }
         val imgSong =
             if (listSong.get(position).isLocal) ContentUris.withAppendedId(
-                Uri.parse(MEDIA_EXTERNAL_AUDIO_URI),
+                Uri.parse(Constant.MEDIA_EXTERNAL_AUDIO_URI),
                 listSong.get(position).songInfo.songImg.toLong()
             )
             else listSong.get(position).songInfo.songImg.toUri()

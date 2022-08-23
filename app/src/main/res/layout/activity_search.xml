@@ -52,16 +52,42 @@
         app:layout_constraintTop_toBottomOf="@+id/tool_bar"
         tools:ignore="NotSibling" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_0dp"
-        android:layout_marginTop="@dimen/margin_10dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/container_state_song"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_search"
-        tools:ignore="NotSibling"
-        tools:listitem="@layout/item_recycle_view" />
+        tools:ignore="NotSibling">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/container_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:cardBackgroundColor="@android:color/transparent">
+            <ProgressBar
+                android:id="@+id/progress_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+            <TextView
+                android:id="@+id/text_no_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:textSize="@dimen/text_size_17sp"
+                android:text="@string/no_data"
+                android:textStyle="bold"/>
+        </androidx.cardview.widget.CardView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycle_view_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_recycle_view" />
+    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_state_song"
@@ -73,7 +99,7 @@
         tools:ignore="MissingConstraints">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/cimg"
+            android:id="@+id/circle_image_song"
             android:layout_width="@dimen/size_circle_image"
             android:layout_height="@dimen/size_circle_image"
             android:layout_margin="@dimen/margin_7dp"
@@ -84,7 +110,7 @@
 
 
         <TextView
-            android:id="@+id/textview_song_name"
+            android:id="@+id/text_song_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_10dp"
@@ -95,11 +121,11 @@
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cimg"
+            app:layout_constraintStart_toEndOf="@+id/circle_image_song"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textview_artist_name"
+            android:id="@+id/text_artist_name"
             android:layout_width="@dimen/layout_0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -107,8 +133,8 @@
             android:text="@string/artist_name"
             android:textSize="@dimen/text_size_14sp"
             app:layout_constraintEnd_toStartOf="@+id/button_favorite"
-            app:layout_constraintStart_toStartOf="@+id/textview_song_name"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintStart_toStartOf="@+id/text_song_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
         <ImageButton
             android:id="@+id/button_next"
@@ -118,7 +144,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_next_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
         <ImageButton
             android:id="@+id/button_play"
@@ -128,7 +154,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_play_24"
             app:layout_constraintEnd_toStartOf="@+id/button_next"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
         <ImageButton
             android:id="@+id/button_favorite"
@@ -138,7 +164,7 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_favorite_24"
             app:layout_constraintEnd_toStartOf="@+id/button_play"
-            app:layout_constraintTop_toBottomOf="@+id/textview_song_name" />
+            app:layout_constraintTop_toBottomOf="@+id/text_song_name" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
