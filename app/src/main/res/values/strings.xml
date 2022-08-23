@@ -14,4 +14,5 @@
     <string name="search">Tìm kiếm bài hát...</string>
     <string name="search_result">Kết quả tìm kiếm</string>
     <string name="trending">Thịnh hành</string>
+    <string name="no_data">Không tìm thấy kết quả</string>
 </resources>
