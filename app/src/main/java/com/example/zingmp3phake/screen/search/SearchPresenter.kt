@@ -90,7 +90,7 @@ class SearchPresenter(
     }
 
     override fun handlePlayOrPauseSong() {
-        view?.displayPlayOrPause(musicService.isPlayings)
+         view?.displayPlayOrPause(musicService.isPlayings)
     }
 
     override fun bindService(context: Context) {

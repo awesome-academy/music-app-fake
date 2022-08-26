@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.zingmp3phake.data.repo.resource.Listener
 import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.handler
+import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
 import java.util.concurrent.Executor
@@ -25,13 +26,19 @@ class GetSongInSpotify<T>(
 
     private fun fetchAPI() {
         val result = GetJson().getJonFromSpotifyAPI(url)
-        if (result != null) {
-            Log.v(Constant.TAG_LOG, result)
-            val jsonObject = JSONObject(result)
-            val data = GetDataSong().parseToData(jsonObject, key) as T
+        try {
+            if (result != null) {
+                val jsonObject = JSONObject(result)
+                val data = GetDataSong().parseToData(jsonObject, key) as T
+                handler.post {
+                    if (data == null) listener.onFail(Constant.NO_DATA)
+                    else listener.onSuccess(data)
+                }
+            }
+        } catch (e: JSONException) {
+            Log.v(Constant.TAG_LOG, e.toString())
             handler.post {
-                if (data == null) listener.onFail(Constant.NO_DATA)
-                else listener.onSuccess(data)
+                listener.onFail(Constant.NO_DATA)
             }
         }
     }

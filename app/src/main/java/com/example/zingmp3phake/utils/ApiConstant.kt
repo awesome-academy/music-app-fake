@@ -1,6 +1,6 @@
 package com.example.zingmp3phake.utils
 
-object ApiConstant{
+object ApiConstant {
     const val API_TRENDING_ZING_SONG =
         "https://mp3.zing.vn/xhr/chart-realtime?songId=0&videoId=0&albumId=0&chart=song&time=-1"
     const val API_ZING_SONG = "https://mp3.zing.vn/xhr/media/get-source?type=audio&key="

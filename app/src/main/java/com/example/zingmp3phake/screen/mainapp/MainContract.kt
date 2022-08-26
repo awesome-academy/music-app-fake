@@ -2,6 +2,7 @@ package com.example.zingmp3phake.screen.mainapp
 
 import android.content.Context
 import com.example.zingmp3phake.data.model.Song
+import com.example.zingmp3phake.utils.base.BasePresenter
 
 interface MainContract {
     interface View {
@@ -12,15 +13,11 @@ interface MainContract {
         fun displayUnFavorite()
     }
 
-    interface Presenter {
-        fun registerBroadcast()
-        fun bindService(context: Context)
-        fun unBindService()
-        fun handleNextSong()
-        fun handlePlayOrPauseSong()
-        fun handlePreviousSong()
-        fun handleStartSong()
-        fun handleFavoriteSong()
-        fun unRegisterBroadcast()
+    interface Presenter : BasePresenter<View> {
+        fun handleNextSong(context: Context)
+        fun handlePlayOrPauseSong(context: Context)
+        fun handlePreviousSong(context: Context)
+        fun handleStartSong(context: Context)
+        fun handleFavoriteSong(context: Context)
     }
 }
