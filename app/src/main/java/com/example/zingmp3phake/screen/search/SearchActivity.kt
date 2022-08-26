@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.example.zingmp3phake.databinding.ActivitySearchBinding
 import com.example.zingmp3phake.screen.detailsong.DetailSongActivity
 import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.MusicAction
+import com.example.zingmp3phake.utils.NetworkUtils
 import com.example.zingmp3phake.utils.TIME_DELAY_FOR_LOAD
 import com.example.zingmp3phake.utils.base.BaseActivity
 import com.example.zingmp3phake.utils.handler
@@ -110,8 +112,15 @@ class SearchActivity :
                     isLoading = false
                     isEndPage = false
                     recyclerViewSearchAdapter.setData(mutableListOf<Song>())
+                    progressLoading.visibility = View.VISIBLE
+                    textNoData.visibility = View.GONE
                     containerLoading.visibility = View.VISIBLE
-                    presenter.getFisrtResultSearch(text)
+                    if (NetworkUtils.isNetworkAvailable(applicationContext) == false) Toast.makeText(
+                        applicationContext,
+                        Constant.NO_INTERNET,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else presenter.getFisrtResultSearch(text)
                     return true
                 }
 
@@ -185,15 +194,20 @@ class SearchActivity :
         }
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        presenter.handlePlayOrPauseSong()
+    }
+
     override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
         presenter.apply {
             if (isConnected) {
-                unbindService(serviceConnection)
+                applicationContext.unbindService(serviceConnection)
                 isConnected = false
             }
             unregisterReceiver(localReceiver)
         }
-        handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 

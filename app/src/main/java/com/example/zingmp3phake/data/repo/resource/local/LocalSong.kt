@@ -8,6 +8,7 @@ import com.example.zingmp3phake.data.model.SongInfo
 import com.example.zingmp3phake.data.repo.resource.Listener
 import com.example.zingmp3phake.data.repo.resource.SongDataSource
 import com.example.zingmp3phake.data.repo.resource.local.database.SongDatabase
+import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.INDEX_0
 import com.example.zingmp3phake.utils.INDEX_1
 import com.example.zingmp3phake.utils.INDEX_2
@@ -17,8 +18,6 @@ import com.example.zingmp3phake.utils.INDEX_5
 import com.example.zingmp3phake.utils.INDEX_6
 import com.example.zingmp3phake.utils.INDEX_7
 import com.example.zingmp3phake.utils.INDEX_8
-import com.example.zingmp3phake.utils.N0_LYRIC
-import com.example.zingmp3phake.utils.NO_DATA
 import com.example.zingmp3phake.utils.TABLE_SONG
 import com.example.zingmp3phake.utils.handler
 import java.util.concurrent.Executors
@@ -64,7 +63,7 @@ class LocalSong : SongDataSource.SongLocalSource {
                         ),
                         true,
                         false,
-                        N0_LYRIC
+                        Constant.N0_LYRIC
                     )
                 )
             }
@@ -72,7 +71,7 @@ class LocalSong : SongDataSource.SongLocalSource {
         executor.execute {
             handler.post({
                 if (list.size > 0) listen.onSuccess(list)
-                else listen.onFail(NO_DATA)
+                else listen.onFail(Constant.NO_DATA)
             })
         }
     }
@@ -106,7 +105,7 @@ class LocalSong : SongDataSource.SongLocalSource {
             executor.execute {
                 handler.post {
                     if (listSong.size == 0) {
-                        listen.onFail(NO_DATA)
+                        listen.onFail(Constant.NO_DATA)
                     } else listen.onSuccess(listSong)
                 }
             }
@@ -142,7 +141,7 @@ class LocalSong : SongDataSource.SongLocalSource {
             executor.execute {
                 handler.post {
                     if (listSong.size == 0) {
-                        listen.onFail(NO_DATA)
+                        listen.onFail(Constant.NO_DATA)
                     } else listen.onSuccess(listSong)
                 }
             }
@@ -156,8 +155,8 @@ class LocalSong : SongDataSource.SongLocalSource {
                 val isfavorite = if (song.isFavorite) 1 else 0
                 val sql =
                     "INSERT INTO $TABLE_SONG VALUES ('${song.songInfo.songid}', '${song.songInfo.songName}', " +
-                        "'${song.songInfo.songArtist}', ${song.songInfo.duration}, '${song.songInfo.songUrl}', " +
-                        "'${song.songInfo.songImg}', $isLocal, $isfavorite, '${song.lyrics}');"
+                            "'${song.songInfo.songArtist}', ${song.songInfo.duration}, '${song.songInfo.songUrl}', " +
+                            "'${song.songInfo.songImg}', $isLocal, $isfavorite, '${song.lyrics}');"
                 songDb?.queryData(sql)
             } catch (e: SQLiteConstraintException) {
                 Logger.getLogger(e.toString())

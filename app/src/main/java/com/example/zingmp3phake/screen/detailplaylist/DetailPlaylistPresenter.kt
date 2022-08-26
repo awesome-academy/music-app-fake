@@ -1,6 +1,5 @@
 package com.example.zingmp3phake.screen.detailplaylist
 
-import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -8,15 +7,10 @@ import android.content.ServiceConnection
 import android.os.IBinder
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.screen.MusicService
-import com.example.zingmp3phake.utils.ACTION_MUSIC
-import com.example.zingmp3phake.utils.MusicAction
-import com.example.zingmp3phake.utils.TIME_DELAY_FOR_LOAD
-import com.example.zingmp3phake.utils.handler
 
-class DetailPlaylistPresenter(
-    private val view: DetailPlaylistContract.View
-) : DetailPlaylistContract.Presenter {
+class DetailPlaylistPresenter : DetailPlaylistContract.Presenter {
 
+    private var view: DetailPlaylistContract.View? = null
     private var isConnected = false
     private lateinit var musicService: MusicService
     private var serviceConnection = object : ServiceConnection {
@@ -25,49 +19,20 @@ class DetailPlaylistPresenter(
             musicService = binder.getService()
             isConnected = true
             getCurrentSong()
-            view.displayPlayOrPause(musicService.isPlayings)
+            view?.displayPlayOrPause(musicService.isPlayings)
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
             isConnected = false
         }
     }
-    var localReceiver = object : BroadcastReceiver() {
-        override fun onReceive(p0: Context?, intent: Intent?) {
-            when (intent?.getStringExtra(ACTION_MUSIC)) {
-                MusicAction.START.name -> {
-                    handler.removeCallbacksAndMessages(null)
-                    getCurrentSong()
-                }
-                MusicAction.PLAYORPAUSE.name -> {
-                    handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed({
-                        view.displayPlayOrPause(musicService.isPlayings)
-                    }, TIME_DELAY_FOR_LOAD)
-                }
-                MusicAction.NEXT.name -> {
-                    handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed({
-                        getCurrentSong()
-                    }, TIME_DELAY_FOR_LOAD)
-                }
-                MusicAction.FAVORITE.name -> {
-                    handler.removeCallbacksAndMessages(null)
-                    handler.postDelayed({
-                        handleFavorite()
-                    }, TIME_DELAY_FOR_LOAD)
-                }
-                else -> {}
-            }
-        }
-    }
 
     override fun getCurrentSong() {
         if (musicService.listSongs.size == 0) {
-            view.displayCurrentSong(Song())
+            view?.displayCurrentSong(Song())
         } else {
             val song = musicService.listSongs.get(musicService.positions)
-            view.displayCurrentSong(song)
+            view?.displayCurrentSong(song)
         }
     }
 
@@ -81,10 +46,26 @@ class DetailPlaylistPresenter(
     }
 
     override fun handleFavorite() {
-        view.displayFavorite(musicService.listSongs.get(musicService.positions).isFavorite)
+        view?.displayFavorite(musicService.listSongs.get(musicService.positions).isFavorite)
+    }
+
+    override fun handlePlayOrPauseSong() {
+        view?.displayPlayOrPause(musicService.isPlayings)
     }
 
     override fun handleStartSong(list: MutableList<Song>, pos: Int) {
         musicService.startSong(list, pos)
+    }
+
+    override fun onStart() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun onStop() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun setView(view: DetailPlaylistContract.View?) {
+        this.view = view
     }
 }

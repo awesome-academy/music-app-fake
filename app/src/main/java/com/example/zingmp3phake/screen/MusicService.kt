@@ -26,18 +26,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.zingmp3phake.R
 import com.example.zingmp3phake.data.model.Song
-import com.example.zingmp3phake.utils.ACTION_MUSIC
-import com.example.zingmp3phake.utils.ACTION_MUSIC_BROADCAST
-import com.example.zingmp3phake.utils.CHANNEL_ID
-import com.example.zingmp3phake.utils.CHANNEL_NAME
-import com.example.zingmp3phake.utils.MEDIA_EXTERNAL_AUDIO_URI
+import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.MusicAction
-import com.example.zingmp3phake.utils.NOTIFICATION_ID
-import com.example.zingmp3phake.utils.TAG_LOG
-import com.example.zingmp3phake.utils.TAG_MEDIA_SESSION
-import com.example.zingmp3phake.utils.TITILE_NEXT
-import com.example.zingmp3phake.utils.TITILE_PAUSE
-import com.example.zingmp3phake.utils.TITILE_PLAY
 import java.io.FileNotFoundException
 import java.lang.reflect.InvocationTargetException
 import kotlin.random.Random
@@ -67,17 +57,17 @@ class MusicService : Service() {
             clearActions()
             if (isPlayings) addAction(
                 R.drawable.ic_play_24,
-                TITILE_PLAY,
+                Constant.TITILE_PLAY,
                 getPendingIntent(MusicAction.PLAYORPAUSE.name)
             )
             else addAction(
                 R.drawable.ic_pause_24,
-                TITILE_PAUSE,
+                Constant.TITILE_PAUSE,
                 getPendingIntent(MusicAction.PLAYORPAUSE.name)
             )
             addAction(
                 R.drawable.ic_next_24,
-                TITILE_NEXT,
+                Constant.TITILE_NEXT,
                 getPendingIntent(MusicAction.NEXT.name)
             )
         }
@@ -89,26 +79,26 @@ class MusicService : Service() {
                         ImageDecoder.createSource(
                             this.contentResolver,
                             ContentUris.withAppendedId(
-                                Uri.parse(MEDIA_EXTERNAL_AUDIO_URI),
+                                Uri.parse(Constant.MEDIA_EXTERNAL_AUDIO_URI),
                                 song.songInfo.songImg.toLong()
                             )
                         )
                     )
                 }
             } catch (e: InvocationTargetException) {
-                e.message?.let { Log.v(TAG_LOG, it) }
+                e.message?.let { Log.v(Constant.TAG_LOG, it) }
                 bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.imgzingmp3logo)
             } catch (e: FileNotFoundException) {
-                e.message?.let { Log.v(TAG_LOG, it) }
+                e.message?.let { Log.v(Constant.TAG_LOG, it) }
                 bitmap = BitmapFactory.decodeResource(this.resources, R.drawable.imgzingmp3logo)
             }
             notification?.setLargeIcon(bitmap)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForeground(NOTIFICATION_ID, notification?.build())
+                startForeground(Constant.NOTIFICATION_ID, notification?.build())
             } else {
                 val notificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.notify(NOTIFICATION_ID, notification?.build())
+                notificationManager.notify(Constant.NOTIFICATION_ID, notification?.build())
             }
         } else {
             Glide.with(applicationContext).asBitmap()
@@ -120,11 +110,14 @@ class MusicService : Service() {
                     ) {
                         notification?.setLargeIcon(resource)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            startForeground(NOTIFICATION_ID, notification?.build())
+                            startForeground(Constant.NOTIFICATION_ID, notification?.build())
                         } else {
                             val notificationManager =
                                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                            notificationManager.notify(NOTIFICATION_ID, notification?.build())
+                            notificationManager.notify(
+                                Constant.NOTIFICATION_ID,
+                                notification?.build()
+                            )
                         }
                     }
 
@@ -138,7 +131,8 @@ class MusicService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, importance)
+            val channel =
+                NotificationChannel(Constant.CHANNEL_ID, Constant.CHANNEL_NAME, importance)
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
@@ -146,8 +140,8 @@ class MusicService : Service() {
     }
 
     private fun getPendingIntent(action: String): PendingIntent? {
-        val intent = Intent(ACTION_MUSIC_BROADCAST)
-        intent.putExtra(ACTION_MUSIC, action)
+        val intent = Intent(Constant.ACTION_MUSIC_BROADCAST)
+        intent.putExtra(Constant.ACTION_MUSIC, action)
         return PendingIntent.getBroadcast(
             applicationContext,
             Random.nextInt(),
@@ -206,8 +200,8 @@ class MusicService : Service() {
 
     private fun createNotifi() {
         isCreate = true
-        val mediaSession = MediaSessionCompat(this, TAG_MEDIA_SESSION)
-        notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val mediaSession = MediaSessionCompat(this, Constant.TAG_MEDIA_SESSION)
+        notification = NotificationCompat.Builder(this, Constant.CHANNEL_ID)
             .apply {
                 setSmallIcon(R.drawable.ic_favorite_24)
                 setStyle(
@@ -217,17 +211,17 @@ class MusicService : Service() {
                 )
                 if (isPlayings) addAction(
                     R.drawable.ic_play_24,
-                    TITILE_PLAY,
+                    Constant.TITILE_PLAY,
                     getPendingIntent(MusicAction.PLAYORPAUSE.name)
                 )
                 else addAction(
                     R.drawable.ic_pause_24,
-                    TITILE_PAUSE,
+                    Constant.TITILE_PAUSE,
                     getPendingIntent(MusicAction.PLAYORPAUSE.name)
                 )
                 addAction(
                     R.drawable.ic_next_24,
-                    TITILE_NEXT,
+                    Constant.TITILE_NEXT,
                     getPendingIntent(MusicAction.NEXT.name)
                 )
             }

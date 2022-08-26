@@ -1,7 +1,7 @@
 package com.example.zingmp3phake.screen.detailsong
 
-import android.content.Context
 import com.example.zingmp3phake.data.model.Song
+import com.example.zingmp3phake.utils.base.BasePresenter
 
 interface DetailSongContract {
 
@@ -13,9 +13,7 @@ interface DetailSongContract {
         fun displayFavorite(isFavorite: Boolean)
     }
 
-    interface Presenter {
-        fun bindService(context: Context)
-        fun unBindService()
+    interface Presenter : BasePresenter<View> {
         fun getCurrentSong()
         fun handleChangeSeekBar(value: Int)
         fun getLyrics()
