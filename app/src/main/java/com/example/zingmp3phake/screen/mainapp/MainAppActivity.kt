@@ -1,12 +1,16 @@
 package com.example.zingmp3phake.screen.mainapp
 
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.Uri
+import android.os.IBinder
 import android.view.View
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -30,7 +34,7 @@ class MainAppActivity :
     BaseActivity<ActivityMainAppBinding>(ActivityMainAppBinding::inflate),
     MainContract.View {
 
-    private lateinit var presenter: MainActivityPresenter
+    private lateinit var presenter: MainAppPresenter
     private var localReciver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, intent: Intent?) {
             presenter.apply {
@@ -45,9 +49,21 @@ class MainAppActivity :
             }
         }
     }
+    private var isConnection = false
+    var serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            presenter.musicService = binder.getService()
+            isConnection = true
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isConnection = false
+        }
+    }
 
     override fun initData() {
-        presenter = MainActivityPresenter(
+        presenter = MainAppPresenter(
             SongRepository.getInstance(
                 LocalSong.getInstance(),
                 RemoteSong.getInstance()
@@ -97,16 +113,20 @@ class MainAppActivity :
     }
 
     override fun onDestroy() {
-        unbindService(presenter.serviceConnection)
+        unbindService(serviceConnection)
         unregisterReceiver(localReciver)
         super.onDestroy()
+    }
+
+    override fun displayNoInternet() {
+        Toast.makeText(applicationContext, Constant.NO_INTERNET, Toast.LENGTH_SHORT).show()
     }
 
     override fun handleEvent() {
         val filter = IntentFilter(Constant.ACTION_MUSIC_BROADCAST)
         registerReceiver(localReciver, filter)
         val intent = Intent(applicationContext.applicationContext, MusicService::class.java)
-        bindService(intent, presenter.serviceConnection, Context.BIND_AUTO_CREATE)
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         binding.apply {
             viewPagerMain.adapter = ViewPagerMainAdapter(
                 supportFragmentManager,

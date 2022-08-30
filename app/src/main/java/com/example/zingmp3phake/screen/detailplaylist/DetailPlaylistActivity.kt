@@ -2,17 +2,21 @@ package com.example.zingmp3phake.screen.detailplaylist
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.Uri
+import android.os.IBinder
 import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.example.zingmp3phake.R
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.databinding.ActivityDetailPlaylistBinding
+import com.example.zingmp3phake.screen.MusicService
 import com.example.zingmp3phake.screen.detailsong.DetailSongActivity
 import com.example.zingmp3phake.screen.personal.RecyclerViewRecentAdapter
 import com.example.zingmp3phake.utils.Constant
@@ -31,6 +35,20 @@ class DetailPlaylistActivity :
 
     private lateinit var adapterDetailPlaylist: RecyclerViewRecentAdapter
     private lateinit var presenter: DetailPlaylistPresenter
+    private var isConnected = false
+    private var serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            presenter.musicService = binder.getService()
+            isConnected = true
+            presenter.getCurrentSong()
+            displayPlayOrPause(presenter.musicService.isPlayings)
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isConnected = false
+        }
+    }
     private var localReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, intent: Intent?) {
             when (intent?.getStringExtra(Constant.ACTION_MUSIC)) {
@@ -73,7 +91,8 @@ class DetailPlaylistActivity :
 
     override fun handleEvent() {
         presenter.apply {
-            bindService(applicationContext)
+            val intent = Intent(applicationContext, MusicService::class.java)
+            applicationContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             val filter = IntentFilter(Constant.ACTION_MUSIC_BROADCAST)
             registerReceiver(localReceiver, filter)
         }
@@ -114,8 +133,8 @@ class DetailPlaylistActivity :
         binding.buttonPlay.setImageResource(R.drawable.ic_play_24)
     }
 
-    override fun displayCurrentSong(song: Song) {
-        if (song.songInfo.songid == null) return
+    override fun displayCurrentSong(song: Song?) {
+        if (song == null) return
         binding.apply {
             textSongName.text = song.songInfo.songName
             textArtistName.text = song.songInfo.songArtist
@@ -155,7 +174,7 @@ class DetailPlaylistActivity :
 
     override fun onDestroy() {
         presenter.apply {
-            unBindService(applicationContext)
+            if (isConnected) unbindService(serviceConnection)
             unregisterReceiver(localReceiver)
         }
         super.onDestroy()

@@ -2,11 +2,14 @@ package com.example.zingmp3phake.screen.search
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.Uri
+import android.os.IBinder
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -18,6 +21,7 @@ import com.example.zingmp3phake.data.repo.SongRepository
 import com.example.zingmp3phake.data.repo.resource.local.LocalSong
 import com.example.zingmp3phake.data.repo.resource.remote.RemoteSong
 import com.example.zingmp3phake.databinding.ActivitySearchBinding
+import com.example.zingmp3phake.screen.MusicService
 import com.example.zingmp3phake.screen.detailsong.DetailSongActivity
 import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.MusicAction
@@ -38,6 +42,19 @@ class SearchActivity :
     private var isEndPage = false
     private var isLoading = false
     private var isFistLoad = false
+    var isConnected = false
+    var serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            presenter.musicService = binder.getService()
+            isConnected = true
+            presenter.getCurrentSong()
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isConnected = false
+        }
+    }
     private var localReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, intent: Intent?) {
             when (intent?.getStringExtra(Constant.ACTION_MUSIC)) {
@@ -84,7 +101,8 @@ class SearchActivity :
 
     override fun handleEvent() {
         presenter.apply {
-            bindService(applicationContext)
+            val intent = Intent(applicationContext, MusicService::class.java)
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             val filter = IntentFilter(Constant.ACTION_MUSIC_BROADCAST)
             registerReceiver(localReceiver, filter)
         }
@@ -140,8 +158,8 @@ class SearchActivity :
         }
     }
 
-    override fun displayCurrentSong(song: Song) {
-        if (song.songInfo.songid == null) return
+    override fun displayCurrentSong(song: Song?) {
+        if (song == null) return
         binding.apply {
             textSongName.text = song.songInfo.songName
             textArtistName.text = song.songInfo.songArtist

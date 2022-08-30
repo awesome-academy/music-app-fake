@@ -21,25 +21,12 @@ class SearchPresenter(
     private var view: SearchContract.View? = null
     private var textQuery: String? = null
     private var offSet = 0
-    var isConnected = false
-    private lateinit var musicService: MusicService
-    var serviceConnection = object : ServiceConnection {
-        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
-            val binder = service as MusicService.LocalBinder
-            musicService = binder.getService()
-            isConnected = true
-            getCurrentSong()
-            view?.displayPlayOrPause(musicService.isPlayings)
-        }
-
-        override fun onServiceDisconnected(p0: ComponentName?) {
-            isConnected = false
-        }
-    }
+    var musicService: MusicService = MusicService()
 
     override fun getCurrentSong() {
+
         if (musicService.listSongs.size == 0) {
-            view?.displayCurrentSong(Song())
+            view?.displayCurrentSong(null)
         } else {
             val song = musicService.listSongs.get(musicService.positions)
             view?.displayCurrentSong(song)
@@ -91,13 +78,6 @@ class SearchPresenter(
 
     override fun handlePlayOrPauseSong() {
          view?.displayPlayOrPause(musicService.isPlayings)
-    }
-
-    override fun bindService(context: Context) {
-        if (isConnected == false) {
-            val intent = Intent(context, MusicService::class.java)
-            context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-        }
     }
 
     override fun handleFavorite() {

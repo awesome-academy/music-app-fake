@@ -3,6 +3,7 @@ package com.example.zingmp3phake.data.repo.resource.local
 import android.content.Context
 import android.database.sqlite.SQLiteConstraintException
 import android.provider.MediaStore
+import android.util.Log
 import com.example.zingmp3phake.data.model.Song
 import com.example.zingmp3phake.data.model.SongInfo
 import com.example.zingmp3phake.data.repo.resource.Listener
@@ -51,6 +52,8 @@ class LocalSong : SongDataSource.SongLocalSource {
                 val duration = cursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
                 val img = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
                 val id = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
+                Log.v(Constant.TAG_LOG, cursor.getString(url))
+                Log.v(Constant.TAG_LOG, cursor.getString(img))
                 if (url != null) list.add(
                     Song(
                         SongInfo(

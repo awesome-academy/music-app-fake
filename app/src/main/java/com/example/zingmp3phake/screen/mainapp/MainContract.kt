@@ -11,6 +11,7 @@ interface MainContract {
         fun onPauseSong()
         fun displayFavotite()
         fun displayUnFavorite()
+        fun displayNoInternet()
     }
 
     interface Presenter : BasePresenter<View> {
