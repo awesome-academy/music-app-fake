@@ -23,7 +23,6 @@ class DetailImageSongFragment :
         stateRotate = 0
         handler.postDelayed({
             binding.imageviewSong.loadByGlide(binding.root.context, imgUrl.toUri())
-            startAnim()
         }, TIME_DELAY_FOR_LOAD)
     }
 

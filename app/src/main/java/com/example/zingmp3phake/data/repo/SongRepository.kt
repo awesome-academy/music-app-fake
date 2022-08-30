@@ -6,7 +6,7 @@ import com.example.zingmp3phake.data.repo.resource.Listener
 import com.example.zingmp3phake.data.repo.resource.SongDataSource
 import java.net.URL
 
-class SongRepository private constructor(
+class SongRepository constructor(
     val local: SongDataSource.SongLocalSource,
     val remote: SongDataSource.SongRemoteSource
 ) : SongDataSource.SongLocalSource, SongDataSource.SongRemoteSource {

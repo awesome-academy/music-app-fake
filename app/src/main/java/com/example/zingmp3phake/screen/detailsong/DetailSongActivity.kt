@@ -2,11 +2,14 @@ package com.example.zingmp3phake.screen.detailsong
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.net.Uri
+import android.os.IBinder
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.example.zingmp3phake.R
@@ -22,6 +25,7 @@ import com.example.zingmp3phake.utils.Constant
 import com.example.zingmp3phake.utils.MusicAction
 import com.example.zingmp3phake.utils.START_TIME
 import com.example.zingmp3phake.utils.TIME_DELAY_FOR_LOAD
+import com.example.zingmp3phake.utils.TIME_SLEEP_100
 import com.example.zingmp3phake.utils.base.BaseActivity
 import com.example.zingmp3phake.utils.getTimetoMiliSecond
 import com.example.zingmp3phake.utils.getTimetoSecond
@@ -32,21 +36,39 @@ class DetailSongActivity :
     BaseActivity<ActivityDetailSongBinding>(ActivityDetailSongBinding::inflate),
     DetailSongContract.View {
 
-    private lateinit var presenter: DetailSongActivityPresenter
+    private lateinit var presenter: DetailSongPresenter
     private val detailImageFragment = DetailImageSongFragment()
     private val lyricsDetailFragment = DetailLyricSongFragment()
+    private var isConnected = false
+    var serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.LocalBinder
+            presenter.musicService = binder.getService()
+            isConnected = true
+            presenter.getCurrentSong()
+            getTimeforView()
+            handler.postDelayed({
+                presenter.handlePlayOrPause()
+            }, TIME_DELAY_FOR_LOAD)
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            isConnected = false
+        }
+    }
     var localReciver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, intent: Intent?) {
             when (intent?.getStringExtra(Constant.ACTION_MUSIC)) {
                 MusicAction.START.name -> {
                     handler.removeCallbacksAndMessages(null)
-                    presenter.getTimeforView()
+                    getTimeforView()
                     presenter.getCurrentSong()
+                    presenter.handlePlayOrPause()
                 }
                 MusicAction.PLAYORPAUSE.name -> {
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
-                        presenter.getTimeforView()
+                        getTimeforView()
                         presenter.handlePlayOrPause()
                     }, TIME_DELAY_FOR_LOAD)
                 }
@@ -54,14 +76,16 @@ class DetailSongActivity :
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
                         presenter.getCurrentSong()
-                        presenter.getTimeforView()
+                        getTimeforView()
+                        presenter.handlePlayOrPause()
                     }, TIME_DELAY_FOR_LOAD)
                 }
                 MusicAction.PERVIOUS.name -> {
                     handler.removeCallbacksAndMessages(null)
                     handler.postDelayed({
                         presenter.getCurrentSong()
-                        presenter.getTimeforView()
+                        getTimeforView()
+                        presenter.handlePlayOrPause()
                     }, TIME_DELAY_FOR_LOAD)
                 }
                 else -> {}
@@ -70,7 +94,7 @@ class DetailSongActivity :
     }
 
     override fun initData() {
-        presenter = DetailSongActivityPresenter(
+        presenter = DetailSongPresenter(
             SongRepository.getInstance(
                 LocalSong.getInstance(),
                 RemoteSong.getInstance()
@@ -145,21 +169,10 @@ class DetailSongActivity :
         handler.removeCallbacksAndMessages(null)
     }
 
-    private fun getPendingIntent(action: String): PendingIntent? {
-        val intent = Intent(Constant.ACTION_MUSIC_BROADCAST)
-        intent.putExtra(Constant.ACTION_MUSIC, action)
-        return PendingIntent.getBroadcast(
-            applicationContext,
-            Random.nextInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
-    }
-
     override fun handleEvent() {
         presenter.apply {
             val intent = Intent(applicationContext.applicationContext, MusicService::class.java)
-            bindService(intent, presenter.serviceConnection, Context.BIND_AUTO_CREATE)
+            bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             val filter = IntentFilter(Constant.ACTION_MUSIC_BROADCAST)
             registerReceiver(localReciver, filter)
             val service = Intent(applicationContext, MusicService::class.java)
@@ -170,18 +183,18 @@ class DetailSongActivity :
                 finish()
             }
             buttonPlay.setOnClickListener {
-                getPendingIntent(MusicAction.PLAYORPAUSE.name)?.send()
+                SendBroadCast().getPendingIntent(MusicAction.PLAYORPAUSE.name)?.send()
             }
             buttonFavo.setOnClickListener {
-                getPendingIntent(MusicAction.FAVORITE.name)?.send()
+                SendBroadCast().getPendingIntent(MusicAction.FAVORITE.name)?.send()
                 presenter.handleEventFavorite()
             }
             buttonNext.setOnClickListener {
-                getPendingIntent(MusicAction.NEXT.name)?.send()
+                SendBroadCast().getPendingIntent(MusicAction.NEXT.name)?.send()
                 binding.buttonPlay.setImageResource(R.drawable.ic_play_40)
             }
             buttonPre.setOnClickListener {
-                getPendingIntent(MusicAction.PERVIOUS.name)?.send()
+                SendBroadCast().getPendingIntent(MusicAction.PERVIOUS.name)?.send()
                 binding.buttonPlay.setImageResource(R.drawable.ic_play_40)
             }
             seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -199,6 +212,32 @@ class DetailSongActivity :
                     }
                 }
             })
+        }
+    }
+
+    private fun getTimeforView() {
+        handler.post(object : Runnable {
+            override fun run() {
+                val time = presenter.musicService?.getCurrentSongTime()
+                if (time != null) {
+                    displayCurrentTimeSong(time)
+                } else displayCurrentTimeSong(0)
+                handler.removeCallbacks(this)
+                handler.postDelayed(this, TIME_SLEEP_100)
+            }
+        })
+    }
+
+    inner class SendBroadCast {
+        fun getPendingIntent(action: String): PendingIntent? {
+            val intent = Intent(Constant.ACTION_MUSIC_BROADCAST)
+            intent.putExtra(Constant.ACTION_MUSIC, action)
+            return PendingIntent.getBroadcast(
+                applicationContext,
+                Random.nextInt(),
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
         }
     }
 }
